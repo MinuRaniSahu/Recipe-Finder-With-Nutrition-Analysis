@@ -1,5 +1,0 @@
-requests==2.31.0
-pandas==2.0.3
-matplotlib==3.7.2
-Pillow==10.0.0
-tkinter  # Note: tkinter comes with Python, but included for clarity
