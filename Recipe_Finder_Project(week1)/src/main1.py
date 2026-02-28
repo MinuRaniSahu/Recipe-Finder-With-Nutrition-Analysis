@@ -1,10 +1,12 @@
-# main1.py
-
 import requests
 
-API_KEY = "77dec99f1d134a65899d295ef2386615"
+API_KEY = "77dec99f1d134a65899d295ef2386615" # Replace with your valid Spoonacular key
 
 def DevSearch_expedition(dish):
+    """
+    Searches for a recipe by name using Spoonacular API
+    Returns a dictionary with 'ingredients' and 'steps' if found, else None
+    """
     url = "https://api.spoonacular.com/recipes/complexSearch"
     params = {
         "query": dish,
@@ -19,7 +21,11 @@ def DevSearch_expedition(dish):
 
         if data.get("results"):
             recipe = data["results"][0]
-            ingredients = [i["original"] for i in recipe.get("extendedIngredients", [])]
+
+            ingredients = [
+                ingredient["original"]
+                for ingredient in recipe.get("extendedIngredients", [])
+            ]
 
             steps = []
             instructions = recipe.get("analyzedInstructions", [])
@@ -27,7 +33,8 @@ def DevSearch_expedition(dish):
                 steps = [step["step"] for step in instructions[0].get("steps", [])]
 
             return {"ingredients": ingredients, "steps": steps}
+
     except Exception as e:
-        print("Error:", e)
+        print("Error fetching recipe:", e)
 
     return None
