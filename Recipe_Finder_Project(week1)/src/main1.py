@@ -1,9 +1,11 @@
 import requests
 
-# Replace with your Spoonacular API key
 API_KEY = "d755e6b3393c47248c45774d7b254f3c"
-def DevSearch_expedition(dish: str):
+
+def DevSearch_expedition(dish):
+
     url = "https://api.spoonacular.com/recipes/complexSearch"
+
     params = {
         "query": dish,
         "number": 1,
@@ -11,31 +13,25 @@ def DevSearch_expedition(dish: str):
         "apiKey": API_KEY
     }
 
-    try:
-        response = requests.get(url, params=params)
-        response.raise_for_status()  # Will raise error if request failed
-        data = response.json()
+    response = requests.get(url, params=params)
+    data = response.json()
 
-        # Debug: print API response
-        print("Searching for:", dish)
-        print("API response:", data)
+    if data["results"]:
+        recipe = data["results"][0]
 
-        if data.get("results"):
-            recipe = data["results"][0]
+        ingredients = [
+            ingredient["original"]
+            for ingredient in recipe["extendedIngredients"]
+        ]
 
-            ingredients = [
-                i.get("original", "") for i in recipe.get("extendedIngredients", [])
-            ]
+        steps = []
+        if recipe.get("analyzedInstructions"):
+            instructions = recipe["analyzedInstructions"][0]["steps"]
+            steps = [step["step"] for step in instructions]
 
-            steps = []
-            instructions = recipe.get("analyzedInstructions", [])
-            if instructions:
-                steps = [step.get("step", "") for step in instructions[0].get("steps", [])]
-
-            return {"ingredients": ingredients, "steps": steps}
-
-    except Exception as e:
-        print("Error fetching recipe:", e)
+        return {
+            "ingredients": ingredients,
+            "steps": steps
+        }
 
     return None
-
