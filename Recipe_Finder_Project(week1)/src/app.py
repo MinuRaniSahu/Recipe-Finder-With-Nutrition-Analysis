@@ -1,48 +1,28 @@
-import requests
+# app.py
+import streamlit as st
+from main1 import DevSearch_expedition
 
-# Replace this with your Spoonacular API key
-API_KEY = "77dec99f1d134a65899d295ef2386615"
-def DevSearch_expedition(dish):
-    """
-    Searches for a recipe by name using Spoonacular API
-    Returns a dictionary with 'ingredients' and 'steps' if found, else None
-    """
+st.set_page_config(page_title="Recipe Finder", page_icon="🍲")
+st.title("🍲 Recipe Finder App")
+st.write("Search for any recipe and see ingredients and preparation steps.")
 
-    url = "https://api.spoonacular.com/recipes/complexSearch"
+dish = st.text_input("Enter recipe name")
 
-    params = {
-        "query": dish,                # recipe name to search
-        "number": 1,                  # get top 1 result
-        "addRecipeInformation": True, # include ingredients and instructions
-        "apiKey": API_KEY
-    }
+if st.button("Search"):
+    if not dish.strip():
+        st.info("Please type a recipe name to search.")
+    else:
+        recipe = DevSearch_expedition(dish)
+        if recipe:
+            st.success("Recipe Found Successfully! 🎉")
+            st.subheader("Ingredients:")
+            for ingredient in recipe["ingredients"]:
+                st.write("-", ingredient)
+            st.subheader("Preparation Steps:")
+            for i, step in enumerate(recipe["steps"], 1):
+                st.write(f"{i}. {step}")
+        else:
+            st.warning(f"No recipe found for '{dish}'.")
 
-    try:
-        response = requests.get(url, params=params)
-        data = response.json()
-
-        # Check if any recipe is returned
-        if data.get("results"):
-            recipe = data["results"][0]
-
-            # Extract ingredients
-            ingredients = [
-                ingredient["original"]
-                for ingredient in recipe.get("extendedIngredients", [])
-            ]
-
-            # Extract preparation steps
-            steps = []
-            instructions = recipe.get("analyzedInstructions", [])
-            if instructions:
-                steps = [step["step"] for step in instructions[0].get("steps", [])]
-
-            return {
-                "ingredients": ingredients,
-                "steps": steps
-            }
-
-    except Exception as e:
-        print("Error fetching recipe:", e)
-
-    return None
+st.markdown("---")
+st.write("Developed as part of Internship Project")
