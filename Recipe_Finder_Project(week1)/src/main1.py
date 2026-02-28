@@ -20,17 +20,6 @@ def find_recipe(dish_name):
         print("\nSorry, recipe not found.")
 
 def DevSearch_expedition(dish):
-    if dish.lower() == "egg curry":
-        return {
-            "Ingredients": [
-                "2 eggs",
-                "1 onion",
-                "2 tomatoes",
-                "Spices"
-            ],
-            "Instructions": "Boil eggs, prepare gravy, mix and cook."
-        }
-    else:
-        return "Recipe not found"
+    return f"Recipe found for {dish}"
 
 
