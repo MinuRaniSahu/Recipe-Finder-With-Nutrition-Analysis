@@ -1,40 +1,40 @@
-import requests
+import streamlit as st
+from main1 import DevSearch_expedition
 
-API_KEY = "77dec99f1d134a65899d295ef2386615" # Replace with your valid Spoonacular key
+# Page config
+st.set_page_config(page_title="Recipe Finder", page_icon="🍲")
 
-def DevSearch_expedition(dish):
-    """
-    Searches for a recipe by name using Spoonacular API
-    Returns a dictionary with 'ingredients' and 'steps' if found, else None
-    """
-    url = "https://api.spoonacular.com/recipes/complexSearch"
-    params = {
-        "query": dish,
-        "number": 1,
-        "addRecipeInformation": True,
-        "apiKey": API_KEY
-    }
+# Title
+st.markdown("<h1 style='text-align:center; color:#ff4b4b;'>🍲 Recipe Finder App</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center; color:#555;'>Find ingredients and preparation steps instantly!</p>", unsafe_allow_html=True)
+st.markdown("---")
 
-    try:
-        response = requests.get(url, params=params)
-        data = response.json()
+# Input
+dish = st.text_input("🍽️ Enter recipe name here")
 
-        if data.get("results"):
-            recipe = data["results"][0]
+# Search Button
+if st.button("🔍 Search"):
+    if not dish.strip():
+        st.warning("Please type a recipe name!")
+    else:
+        recipe = DevSearch_expedition(dish)
 
-            ingredients = [
-                ingredient["original"]
-                for ingredient in recipe.get("extendedIngredients", [])
-            ]
+        if recipe:
+            st.success(f"✅ Recipe Found: **{dish.title()}**")
+            
+            # Ingredients
+            st.markdown("### 🧂 Ingredients")
+            for ingredient in recipe["ingredients"]:
+                st.markdown(f"- {ingredient}")
 
-            steps = []
-            instructions = recipe.get("analyzedInstructions", [])
-            if instructions:
-                steps = [step["step"] for step in instructions[0].get("steps", [])]
+            # Preparation Steps
+            st.markdown("### 👩‍🍳 Preparation Steps")
+            for i, step in enumerate(recipe["steps"], 1):
+                st.markdown(f"{i}. {step}")
 
-            return {"ingredients": ingredients, "steps": steps}
+        else:
+            st.error("❌ Recipe not found. Try another dish!")
 
-    except Exception as e:
-        print("Error fetching recipe:", e)
-
-    return None
+# Footer
+st.markdown("---")
+st.markdown("<p style='text-align:center; color:#888;'>Developed as part of Internship Project</p>", unsafe
