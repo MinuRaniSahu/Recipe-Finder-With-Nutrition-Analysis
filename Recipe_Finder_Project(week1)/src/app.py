@@ -6,13 +6,12 @@ import os
 # Enter your Spoonacular free API key here
 API_KEY = "77dec99f1d134a65899d295ef2386615"
 # --------------------------
-
 st.set_page_config(page_title="Indian & Global Recipe Finder", layout="wide")
-st.title("🌎 Indian & Global Recipe Finder")
+st.title("🇮🇳 Indian & 🌍 Global Recipe Finder")
 
-st.write("Search recipes worldwide. Indian recipes are loaded from local JSON, global recipes from TheMealDB API. Results are shown in separate sections.")
+st.write("Type the name of the recipe you want to find. Choose Indian or Global.")
 
-# Load Indian recipes from local JSON
+# Load Indian recipes from JSON
 indian_file = "indian_recipes.json"
 if os.path.exists(indian_file):
     with open(indian_file, "r", encoding="utf-8") as f:
@@ -20,22 +19,17 @@ if os.path.exists(indian_file):
 else:
     indian_recipes = []
 
-# Function to search Indian recipes
-def search_indian(keyword):
+# Search Indian recipes by exact or partial match
+def search_indian(recipe_name):
     results = []
     for recipe in indian_recipes:
-        # Search in title and ingredients
-        title_match = keyword.lower() in recipe["title"].lower()
-        ingredient_match = any(keyword.lower() in ing.lower() for ing in recipe["ingredients"])
-        if title_match or ingredient_match:
-            r = recipe.copy()
-            r["is_indian"] = True
-            results.append(r)
+        if recipe_name.lower() in recipe["title"].lower():
+            results.append(recipe)
     return results
 
-# Function to search global recipes
-def search_global(keyword):
-    url = f"https://www.themealdb.com/api/json/v1/1/search.php?s={keyword}"
+# Search global recipes from TheMealDB by name
+def search_global(recipe_name):
+    url = f"https://www.themealdb.com/api/json/v1/1/search.php?s={recipe_name}"
     try:
         resp = requests.get(url, timeout=10)
         resp.raise_for_status()
@@ -57,58 +51,34 @@ def search_global(keyword):
                 ingredients.append(f"{meas.strip()} {ing.strip()}" if meas else ing.strip())
         steps = meal.get("strInstructions", "").split("\n")
         steps = [s.strip() for s in steps if s.strip()]
-
         results.append({
             "id": meal["idMeal"],
             "title": meal["strMeal"],
-            "ingredients": ingredients,
-            "steps": steps,
             "image": meal["strMealThumb"],
-            "is_indian": False
+            "ingredients": ingredients,
+            "steps": steps
         })
     return results
 
-# User input
-keyword = st.text_input("Enter recipe keyword:")
+# Select recipe type
+recipe_type = st.radio("Choose recipe type:", ["Indian", "Global"])
+recipe_name = st.text_input("Enter the recipe name:")
 
 if st.button("Search"):
-    if not keyword.strip():
-        st.warning("Please enter a recipe keyword.")
+    if not recipe_name.strip():
+        st.warning("Please enter a recipe name.")
     else:
-        # Separate search
-        indian_results = search_indian(keyword)
-        global_results = search_global(keyword)
+        if recipe_type == "Indian":
+            recipes = search_indian(recipe_name)
+            st.markdown("## 🇮🇳 Indian Recipes")
+        else:
+            recipes = search_global(recipe_name)
+            st.markdown("## 🌍 Global Recipes")
 
-        # Indian Recipes Section
-        st.markdown("## 🇮🇳 Indian Recipes")
-        if indian_results:
-            for recipe in indian_results:
-                st.markdown(f"### **_{recipe['title']}_**")
+        if recipes:
+            for recipe in recipes:
+                st.markdown(f"### **_{recipe['title']}_** (ID: {recipe.get('id', 'Local')})")
                 if recipe.get("image"):
                     st.image(recipe["image"], width=400)
                 st.markdown("**Ingredients:**")
-                for ing in recipe["ingredients"]:
-                    st.write(f"- {ing}")
-                st.markdown("**Preparation Steps:**")
-                for i, step in enumerate(recipe["steps"], 1):
-                    st.write(f"{i}. {step}")
-                st.markdown("---")
-        else:
-            st.write("No Indian recipes found for this keyword.")
-
-        # Global Recipes Section
-        st.markdown("## 🌍 Global Recipes")
-        if global_results:
-            for recipe in global_results:
-                st.markdown(f"### **_{recipe['title']}_** (ID: {recipe['id']})")
-                if recipe.get("image"):
-                    st.image(recipe["image"], width=400)
-                st.markdown("**Ingredients:**")
-                for ing in recipe["ingredients"]:
-                    st.write(f"- {ing}")
-                st.markdown("**Preparation Steps:**")
-                for i, step in enumerate(recipe["steps"], 1):
-                    st.write(f"{i}. {step}")
-                st.markdown("---")
-        else:
-            st.write("No global recipes found for this keyword.")
+                for ing in
