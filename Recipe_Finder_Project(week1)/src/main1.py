@@ -1,7 +1,7 @@
 import requests
 
 # Replace with your Spoonacular API key
-API_KEY = "bcd787be9ab94bf987d2f7e4e925ae7b"
+API_KEY = "d755e6b3393c47248c45774d7b254f3c"
 def DevSearch_expedition(dish: str):
     url = "https://api.spoonacular.com/recipes/complexSearch"
     params = {
@@ -38,3 +38,4 @@ def DevSearch_expedition(dish: str):
         print("Error fetching recipe:", e)
 
     return None
+
