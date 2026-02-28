@@ -3,27 +3,40 @@ import requests
 
 API_KEY = "77dec99f1d134a65899d295ef2386615"  # Replace with your Spoonacular API key
 
-def find_recipe_spoonacular(dish):
-    # Step 1: Search recipe
+def get_recipe_by_name(dish):
+    """
+    Search worldwide recipe on Spoonacular and return ingredients, steps, and recipe ID
+    """
     search_url = "https://api.spoonacular.com/recipes/complexSearch"
-    params = {"query": dish, "number": 1, "apiKey": API_KEY}
+    search_params = {"query": dish, "number": 1, "apiKey": API_KEY}
     
-    response = requests.get(search_url, params=params)
-    data = response.json()
-    
-    if not data["results"]:
+    try:
+        search_response = requests.get(search_url, params=search_params, timeout=10)
+        search_response.raise_for_status()
+        search_data = search_response.json()
+    except requests.exceptions.RequestException as e:
+        print("Network/API error:", e)
         return None
     
-    recipe_id = data["results"][0]["id"]  # Spoonacular ID
+    if "results" not in search_data or len(search_data["results"]) == 0:
+        return None
     
-    # Step 2: Get full recipe info
+    recipe_id = search_data["results"][0]["id"]  # Spoonacular ID
+    
+    # Get full recipe details
     info_url = f"https://api.spoonacular.com/recipes/{recipe_id}/information"
     info_params = {"includeNutrition": False, "apiKey": API_KEY}
     
-    info_response = requests.get(info_url, params=info_params)
-    recipe_data = info_response.json()
+    try:
+        info_response = requests.get(info_url, params=info_params, timeout=10)
+        info_response.raise_for_status()
+        recipe_data = info_response.json()
+    except requests.exceptions.RequestException as e:
+        print("Network/API error:", e)
+        return None
     
     ingredients = [ing["original"] for ing in recipe_data.get("extendedIngredients", [])]
+    
     steps = []
     instructions = recipe_data.get("analyzedInstructions", [])
     if instructions:
@@ -36,12 +49,14 @@ def find_recipe_spoonacular(dish):
         "steps": steps
     }
 
-# Example usage
+# --- Usage ---
 dish_name = input("Enter recipe name: ")
-recipe = find_recipe_spoonacular(dish_name)
+recipe = get_recipe_by_name(dish_name)
+
 if recipe:
-    print(f"Recipe ID: {recipe['id']}")
-    print("Ingredients:")
+    print(f"\nRecipe ID: {recipe['id']}")
+    print(f"Title: {recipe['title']}")
+    print("\nIngredients:")
     for ing in recipe["ingredients"]:
         print("-", ing)
     print("\nPreparation Steps:")
