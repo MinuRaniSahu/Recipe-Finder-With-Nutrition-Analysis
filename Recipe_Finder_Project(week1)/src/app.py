@@ -1,34 +1,37 @@
-import streamlit as st
-from main1 import DevSearch_expedition
+import requests
 
-# Page Configuration
-st.set_page_config(page_title="Recipe Finder", page_icon="🍲")
+API_KEY = "77dec99f1d134a65899d295ef2386615"
 
-# Title
-st.title("🍲 Recipe Finder App")
-st.write("Find your favorite recipes instantly!")
+def DevSearch_expedition(dish):
 
-# Input Box
-dish = st.text_input("Enter recipe name")
+    url = "https://api.spoonacular.com/recipes/complexSearch"
 
-# Search Logic
-if dish:
-    recipe = DevSearch_expedition(dish)
+    params = {
+        "query": dish,
+        "number": 1,
+        "addRecipeInformation": True,
+        "apiKey": API_KEY
+    }
 
-    if recipe:
-        st.success("Recipe Found Successfully! 🎉")
+    response = requests.get(url, params=params)
+    data = response.json()
 
-        st.subheader("🧂 Ingredients:")
-        for ingredient in recipe["ingredients"]:
-            st.write("•", ingredient)
+    if data["results"]:
+        recipe = data["results"][0]
 
-        st.subheader("👩‍🍳 Preparation Steps:")
-        for step in recipe["steps"]:
-            st.write("•", step)
+        ingredients = [
+            ingredient["original"]
+            for ingredient in recipe["extendedIngredients"]
+        ]
 
-    else:
-        st.error("Recipe not found. Please try another dish.")
+        steps = []
+        if recipe.get("analyzedInstructions"):
+            instructions = recipe["analyzedInstructions"][0]["steps"]
+            steps = [step["step"] for step in instructions]
 
-# Footer
-st.markdown("---")
-st.write("Developed as part of Internship Project")
+        return {
+            "ingredients": ingredients,
+            "steps": steps
+        }
+
+    return None
