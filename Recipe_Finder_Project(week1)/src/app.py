@@ -5,8 +5,8 @@ st.set_page_config(page_title="Recipe Finder", layout="wide")
 st.title("🍲 Recipe Finder")
 st.write("Type the name of any recipe and get ingredients, preparation steps, and image.")
 
+# Put your Spoonacular API key here
 API_KEY = "77dec99f1d134a65899d295ef2386615"
-
 def search_recipe(dish):
     # Search for up to 5 recipes
     search_url = "https://api.spoonacular.com/recipes/complexSearch"
