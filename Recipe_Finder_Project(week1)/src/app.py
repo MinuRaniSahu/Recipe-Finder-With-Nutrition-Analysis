@@ -1,10 +1,12 @@
-import streamlit as st
-from main1 import DevSearch_expedition
-
-st.title("Recipe Finder")
-
-dish = st.text_input("Enter recipe name")
-
 if dish:
     result = DevSearch_expedition(dish)
-    st.write(result)
+
+    if isinstance(result, dict):
+        st.subheader("Ingredients")
+        for item in result["Ingredients"]:
+            st.write("- " + item)
+
+        st.subheader("Instructions")
+        st.write(result["Instructions"])
+    else:
+        st.write(result)
