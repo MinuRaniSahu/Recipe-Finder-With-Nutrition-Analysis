@@ -1,10 +1,8 @@
 # Recipe Finder Application
 
 recipes = {
-    "pasta": {
-        "ingredients": ["pasta", "salt", "water", "sauce"],
-        "instructions": "Boil pasta. Add sauce. Mix well and serve."
-    },
+    "pasta": { "ingredients": ["pasta", "salt", "water", "sauce"],
+        "instructions": "Boil pasta. Add sauce. Mix well and serve." },
     "omelette": {
         "ingredients": ["egg", "salt", "oil"],
         "instructions": "Beat eggs. Heat oil. Cook eggs and serve."
@@ -31,4 +29,5 @@ def main():
     find_recipe(dish)
 
 if __name__ == "__main__":
+
     main()
