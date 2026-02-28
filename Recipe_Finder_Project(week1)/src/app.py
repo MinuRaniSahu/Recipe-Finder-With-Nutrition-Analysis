@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 
 # --- Your Spoonacular API key ---
-API_KEY = "YOUR_REAL_API_KEY"  # Replace with your real API key
+API_KEY = "77dec99f1d134a65899d295ef2386615" # Replace with your real API key
 
 # --- Function to search recipe globally ---
 def find_recipe_global(dish):
