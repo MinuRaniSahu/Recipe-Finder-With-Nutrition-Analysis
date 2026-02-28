@@ -7,7 +7,7 @@ def get_recipe_by_name(dish):
     """
     Search worldwide recipe on Spoonacular and return ingredients, steps, and recipe ID
     """
-    search_url = https://api.spoonacular.com/recipes/complexSearch?query=pasta&number=1&apiKey=YOUR_FREE_API_KEY
+    search_url = "https://api.spoonacular.com/recipes/complexSearch?query=pasta&number=1&apiKey=YOUR_FREE_API_KEY"
     try:
         search_response = requests.get(search_url, params=search_params, timeout=10)
         search_response.raise_for_status()
