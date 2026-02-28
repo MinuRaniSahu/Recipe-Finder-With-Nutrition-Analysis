@@ -1,83 +1,58 @@
 import streamlit as st
 import requests
-
-# --------------------------
 # Enter your Spoonacular free API key here
 API_KEY = "77dec99f1d134a65899d295ef2386615"
 # --------------------------
 
 st.set_page_config(page_title="Global Recipe Finder", layout="wide")
-st.title("🌎 Global Recipe Finder")  # Clean title, no "Spoonacular API"
+st.title("🌎 Global Recipe Finder (Free)")
 
-st.write("Type a recipe name to see ingredients, preparation steps, and recipe image.")
+st.write("Type any recipe name and get ingredients, preparation steps, and image.")
 
-# Function to fetch recipe from Spoonacular
-def find_recipe(dish_name):
-    # Step 1: Search recipe
-    search_url = "https://api.spoonacular.com/recipes/complexSearch"
-    search_params = {
-        "query": dish_name,
-        "number": 1,
-        "apiKey": API_KEY
-    }
-
+def get_recipe(dish_name):
+    url = f"https://www.themealdb.com/api/json/v1/1/search.php?s={dish_name}"
     try:
-        search_response = requests.get(search_url, params=search_params, timeout=10)
-        search_response.raise_for_status()
-        search_data = search_response.json()
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        data = response.json()
     except requests.exceptions.RequestException as e:
         st.error(f"Network/API error: {e}")
         return None
 
-    if "results" not in search_data or len(search_data["results"]) == 0:
-        return None  # No recipe found
-
-    recipe_id = search_data["results"][0]["id"]
-
-    # Step 2: Get full recipe information
-    info_url = f"https://api.spoonacular.com/recipes/{recipe_id}/information"
-    info_params = {
-        "includeNutrition": False,
-        "apiKey": API_KEY
-    }
-
-    try:
-        info_response = requests.get(info_url, params=info_params, timeout=10)
-        info_response.raise_for_status()
-        recipe_data = info_response.json()
-    except requests.exceptions.RequestException as e:
-        st.error(f"Network/API error: {e}")
+    if not data["meals"]:
         return None
 
-    # Extract ingredients
-    ingredients = [ing["original"] for ing in recipe_data.get("extendedIngredients", [])]
+    meal = data["meals"][0]
 
-    # Extract preparation steps
-    steps = []
-    instructions = recipe_data.get("analyzedInstructions", [])
-    if instructions:
-        steps = [step["step"] for step in instructions[0].get("steps", [])]
+    # Ingredients
+    ingredients = []
+    for i in range(1, 21):
+        ing = meal.get(f"strIngredient{i}")
+        meas = meal.get(f"strMeasure{i}")
+        if ing and ing.strip():
+            ingredients.append(f"{meas.strip()} {ing.strip()}" if meas else ing.strip())
 
-    # Return everything
+    # Preparation steps
+    steps = meal.get("strInstructions", "").split("\n")
+    steps = [s.strip() for s in steps if s.strip()]
+
     return {
-        "id": recipe_id,
-        "title": recipe_data.get("title"),
-        "image": recipe_data.get("image"),
+        "id": meal["idMeal"],
+        "title": meal["strMeal"],
+        "image": meal["strMealThumb"],
         "ingredients": ingredients,
         "steps": steps
     }
 
-# Streamlit input
 dish = st.text_input("Enter recipe name:")
 
 if st.button("Search"):
     if not dish.strip():
         st.warning("Please enter a recipe name.")
     else:
-        recipe = find_recipe(dish)
+        recipe = get_recipe(dish)
         if recipe:
             st.subheader(f"{recipe['title']} (ID: {recipe['id']})")
-            
             if recipe["image"]:
                 st.image(recipe["image"], width=400)
 
