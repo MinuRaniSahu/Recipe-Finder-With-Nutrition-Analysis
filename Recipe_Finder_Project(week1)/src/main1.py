@@ -1,40 +1,49 @@
-import streamlit as st
-from main1 import DevSearch_expedition
+import requests
 
-# Page config
-st.set_page_config(page_title="Recipe Finder", page_icon="🍲")
+# 🔑 Replace this with your real Spoonacular API key
+API_KEY = "77dec99f1d134a65899d295ef2386615"
 
-# Title
-st.markdown("<h1 style='text-align:center; color:#ff4b4b;'>🍲 Recipe Finder App</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align:center; color:#555;'>Find ingredients and preparation steps instantly!</p>", unsafe_allow_html=True)
-st.markdown("---")
+def DevSearch_expedition(dish):
+    """
+    Searches for a recipe by name using Spoonacular API
+    Returns a dictionary with 'ingredients' and 'steps' if found, else None
+    """
+    url = "https://api.spoonacular.com/recipes/complexSearch"
+    params = {
+        "query": dish,
+        "number": 1,
+        "addRecipeInformation": True,
+        "apiKey": API_KEY
+    }
 
-# Input
-dish = st.text_input("🍽️ Enter recipe name here")
+    try:
+        response = requests.get(url, params=params)
+        data = response.json()
 
-# Search Button
-if st.button("🔍 Search"):
-    if not dish.strip():
-        st.warning("Please type a recipe name!")
-    else:
-        recipe = DevSearch_expedition(dish)
+        # 🔹 Debug: print API response to terminal
+        print("Searching for:", dish)
+        print("API response:", data)
 
-        if recipe:
-            st.success(f"✅ Recipe Found: **{dish.title()}**")
-            
-            # Ingredients
-            st.markdown("### 🧂 Ingredients")
-            for ingredient in recipe["ingredients"]:
-                st.markdown(f"- {ingredient}")
+        # Check if the API returned any results
+        if data.get("results"):
+            recipe = data["results"][0]
 
-            # Preparation Steps
-            st.markdown("### 👩‍🍳 Preparation Steps")
-            for i, step in enumerate(recipe["steps"], 1):
-                st.markdown(f"{i}. {step}")
+            # Extract ingredients
+            ingredients = [
+                ingredient["original"]
+                for ingredient in recipe.get("extendedIngredients", [])
+            ]
 
-        else:
-            st.error("❌ Recipe not found. Try another dish!")
+            # Extract preparation steps
+            steps = []
+            instructions = recipe.get("analyzedInstructions", [])
+            if instructions:
+                steps = [step["step"] for step in instructions[0].get("steps", [])]
 
-# Footer
-st.markdown("---")
-st.markdown("<p style='text-align:center; color:#888;'>Developed as part of Internship Project</p>", unsafe
+            return {"ingredients": ingredients, "steps": steps}
+
+    except Exception as e:
+        print("Error fetching recipe:", e)
+
+    # Return None if recipe not found or API failed
+    return None
