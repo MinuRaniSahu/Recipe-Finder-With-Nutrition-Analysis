@@ -1,37 +1,49 @@
 import requests
 
-API_KEY = "77dec99f1d134a65899d295ef2386615"
+# Replace this with your Spoonacular API key
+API_KEY = "PASTE_YOUR_KEY_HERE"
 
 def DevSearch_expedition(dish):
+    """
+    Searches for a recipe by name using Spoonacular API
+    Returns a dictionary with 'ingredients' and 'steps' if found, else None
+    """
 
     url = "https://api.spoonacular.com/recipes/complexSearch"
 
     params = {
-        "query": dish,
-        "number": 1,
-        "addRecipeInformation": True,
+        "query": dish,                # recipe name to search
+        "number": 1,                  # get top 1 result
+        "addRecipeInformation": True, # include ingredients and instructions
         "apiKey": API_KEY
     }
 
-    response = requests.get(url, params=params)
-    data = response.json()
+    try:
+        response = requests.get(url, params=params)
+        data = response.json()
 
-    if data["results"]:
-        recipe = data["results"][0]
+        # Check if any recipe is returned
+        if data.get("results"):
+            recipe = data["results"][0]
 
-        ingredients = [
-            ingredient["original"]
-            for ingredient in recipe["extendedIngredients"]
-        ]
+            # Extract ingredients
+            ingredients = [
+                ingredient["original"]
+                for ingredient in recipe.get("extendedIngredients", [])
+            ]
 
-        steps = []
-        if recipe.get("analyzedInstructions"):
-            instructions = recipe["analyzedInstructions"][0]["steps"]
-            steps = [step["step"] for step in instructions]
+            # Extract preparation steps
+            steps = []
+            instructions = recipe.get("analyzedInstructions", [])
+            if instructions:
+                steps = [step["step"] for step in instructions[0].get("steps", [])]
 
-        return {
-            "ingredients": ingredients,
-            "steps": steps
-        }
+            return {
+                "ingredients": ingredients,
+                "steps": steps
+            }
+
+    except Exception as e:
+        print("Error fetching recipe:", e)
 
     return None
