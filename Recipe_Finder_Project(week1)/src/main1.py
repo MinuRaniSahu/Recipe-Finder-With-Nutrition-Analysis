@@ -1,6 +1,6 @@
 import requests
 
-API_KEY = "YOUR_REAL_API_KEY"  # Replace with your actual key
+API_KEY = "77dec99f1d134a65899d295ef2386615"
 
 def DevSearch_expedition(dish):
     search_url = "https://api.spoonacular.com/recipes/complexSearch"
@@ -45,3 +45,4 @@ while True:
     cont = input("\nSearch another recipe? (y/n): ").strip().lower()
     if cont != "y":
         break
+
