@@ -19,13 +19,7 @@ def find_recipe(dish_name):
     else:
         print("\nSorry, recipe not found.")
 
-def main():
-    print("=== Welcome to Recipe Finder ===")
-    dish = input("Enter recipe name: ")
-    find_recipe(dish)
-
-if __name__ == "__main__":
-
-    main()
+def DevSearch_expedition(dish):
+    return f"Recipe found for{dish}"
 
 
