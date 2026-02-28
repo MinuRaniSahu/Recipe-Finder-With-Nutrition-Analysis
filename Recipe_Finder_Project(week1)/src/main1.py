@@ -1,6 +1,7 @@
 import requests
 
 API_KEY = "d755e6b3393c47248c45774d7b254f3c"
+
 def DevSearch_expedition(dish: str):
     url = "https://api.spoonacular.com/recipes/complexSearch"
     params = {
@@ -24,16 +25,30 @@ def DevSearch_expedition(dish: str):
 
         recipe = results[0]
 
-        # Safely get ingredients
-        ingredients = [
-            i.get("original", "") for i in recipe.get("extendedIngredients", [])
-        ]
+        # Ingredients (fallback if extendedIngredients missing)
+        ingredients = []
+        for i in recipe.get("extendedIngredients", []):
+            if "original" in i and i["original"]:
+                ingredients.append(i["original"])
+        if not ingredients:
+            # Try alternate field if available
+            if recipe.get("ingredients"):
+                ingredients = recipe["ingredients"]
 
-        # Safely get steps
+        # Preparation steps (safely handle missing analyzedInstructions)
         steps = []
         instructions = recipe.get("analyzedInstructions", [])
         if instructions and isinstance(instructions, list):
-            steps = [step.get("step", "") for step in instructions[0].get("steps", [])]
+            steps_data = instructions[0].get("steps", [])
+            for step in steps_data:
+                if "step" in step and step["step"]:
+                    steps.append(step["step"])
+
+        # If nothing found, add a friendly message
+        if not ingredients:
+            ingredients = ["No ingredients found for this recipe."]
+        if not steps:
+            steps = ["No preparation steps found for this recipe."]
 
         return {"ingredients": ingredients, "steps": steps}
 
