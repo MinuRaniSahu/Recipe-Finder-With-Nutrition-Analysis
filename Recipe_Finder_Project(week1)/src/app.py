@@ -5,10 +5,11 @@ API_KEY = "77dec99f1d134a65899d295ef2386615"
 # --------------------------
 st.set_page_config(page_title="Recipe Finder", layout="wide")
 st.title("🍲 Recipe Finder")
+st.write("Search for a recipe by name. Recipes will appear here once added.")
 
-# Empty list for recipes (to be filled externally)
+# Empty list for recipes
 recipes = [
-    # Recipes can be loaded from a file or database
+    # No recipes included here
 ]
 
 # Search box
