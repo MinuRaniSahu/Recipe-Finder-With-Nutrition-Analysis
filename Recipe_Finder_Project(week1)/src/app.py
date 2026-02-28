@@ -1,8 +1,5 @@
 import streamlit as st
-# --------------------------
-# Enter your Spoonacular free API key here
-API_KEY = "77dec99f1d134a65899d295ef2386615"
-# --------------------------
+
 st.set_page_config(page_title="Recipe Finder", layout="wide")
 st.title("🍲 Recipe Finder")
 st.write("Search for a recipe by name. Recipes will appear here once added.")
