@@ -1,7 +1,6 @@
 import requests
 
-API_KEY = "YOUR_REAL_API_KEY"
-
+API_KEY = "77dec99f1d134a65899d295ef2386615"
 def DevSearch_expedition(dish):
 
     # STEP 1: Search recipe
@@ -51,3 +50,4 @@ def DevSearch_expedition(dish):
         "ingredients": ingredients,
         "steps": steps
     }
+
