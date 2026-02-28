@@ -11,12 +11,12 @@ if dish:
     if dish:
     result = DevSearch_expedition(dish)
 
-    if isinstance(result, dict):
-        st.subheader("Ingredients")
-        for item in result["ingredients"]:
-            st.write("- " + item)
+if isinstance(result, dict):
+    st.subheader("Ingredients")
+     for item in result["ingredients"]:
+         st.write("- " + item)
 
         st.subheader("Instructions")
         st.write(result["instructions"])
-    else:
+ else:
         st.write(result)
