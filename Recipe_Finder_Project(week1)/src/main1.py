@@ -1,33 +1,31 @@
 import streamlit as st
 from main1 import DevSearch_expedition
 
-# Page Configuration
 st.set_page_config(page_title="Recipe Finder", page_icon="🍲")
-
-# Title
 st.title("🍲 Recipe Finder App")
-st.write("Find your favorite recipes instantly!")
+st.write("Search for any recipe and see ingredients and preparation steps.")
 
-# Input Box
+# Input box
 dish = st.text_input("Enter recipe name")
 
-# Search Logic
-if dish:
-    recipe = DevSearch_expedition(dish)
-
-    if recipe:
-        st.success("Recipe Found Successfully! 🎉")
-
-        st.subheader("🧂 Ingredients:")
-        for ingredient in recipe["ingredients"]:
-            st.write("•", ingredient)
-
-        st.subheader("👩‍🍳 Preparation Steps:")
-        for step in recipe["steps"]:
-            st.write("•", step)
-
+# Button to trigger search
+if st.button("Search"):
+    if not dish.strip():
+        st.warning("Please type a recipe name!")
     else:
-        st.error("Recipe not found. Please try another dish.")
+        recipe = DevSearch_expedition(dish)
+        if recipe:
+            st.success("Recipe Found Successfully! 🎉")
+
+            st.subheader("Ingredients:")
+            for ingredient in recipe["ingredients"]:
+                st.write("-", ingredient)
+
+            st.subheader("Preparation Steps:")
+            for i, step in enumerate(recipe["steps"], 1):
+                st.write(f"{i}. {step}")
+        else:
+            st.error("Recipe not found. Try another dish.")
 
 # Footer
 st.markdown("---")
