@@ -1,18 +1,10 @@
 import requests
 
-API_KEY = "77dec99f1d134a65899d295ef2386615"
+API_KEY = "YOUR_REAL_API_KEY"  # Replace with your actual key
 
 def DevSearch_expedition(dish):
-
-    # STEP 1: Search recipe
     search_url = "https://api.spoonacular.com/recipes/complexSearch"
-
-    search_params = {
-        "query": dish,
-        "number": 1,
-        "apiKey": API_KEY
-    }
-
+    search_params = {"query": dish, "number": 1, "apiKey": API_KEY}
     search_response = requests.get(search_url, params=search_params)
     search_data = search_response.json()
 
@@ -21,33 +13,35 @@ def DevSearch_expedition(dish):
 
     recipe_id = search_data["results"][0]["id"]
 
-    # STEP 2: Get full information
     info_url = f"https://api.spoonacular.com/recipes/{recipe_id}/information"
-
-    info_params = {
-        "includeNutrition": False,
-        "apiKey": API_KEY
-    }
-
+    info_params = {"includeNutrition": False, "apiKey": API_KEY}
     info_response = requests.get(info_url, params=info_params)
     recipe_data = info_response.json()
 
-    # Extract ingredients
-    ingredients = [
-        ing["original"]
-        for ing in recipe_data.get("extendedIngredients", [])
-    ]
+    ingredients = [ing["original"] for ing in recipe_data.get("extendedIngredients", [])]
 
-    # Extract preparation steps
     steps = []
     instructions = recipe_data.get("analyzedInstructions", [])
     if instructions:
-        steps = [
-            step["step"]
-            for step in instructions[0].get("steps", [])
-        ]
+        steps = [step["step"] for step in instructions[0].get("steps", [])]
 
-    return {
-        "ingredients": ingredients,
-        "steps": steps
-    }
+    return {"ingredients": ingredients, "steps": steps}
+
+# --- App Start ---
+while True:
+    dish = input("Enter recipe name: ").strip()
+    recipe = DevSearch_expedition(dish)
+
+    if recipe:
+        print("\nIngredients:")
+        for ing in recipe["ingredients"]:
+            print("-", ing)
+        print("\nSteps:")
+        for i, step in enumerate(recipe["steps"], start=1):
+            print(f"{i}. {step}")
+    else:
+        print("Recipe not found.")
+
+    cont = input("\nSearch another recipe? (y/n): ").strip().lower()
+    if cont != "y":
+        break
