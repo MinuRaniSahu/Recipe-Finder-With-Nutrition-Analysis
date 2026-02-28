@@ -13,10 +13,10 @@ if dish:
 
 if isinstance(result, dict):
     st.subheader("Ingredients")
-     for item in result["ingredients"]:
-         st.write("- " + item)
+    for item in result["ingredients"]:
+     st.write("- " + item)
 
-        st.subheader("Instructions")
-        st.write(result["instructions"])
- else:
-        st.write(result)
+    st.subheader("Instructions")
+    st.write(result["instructions"])
+else:
+     st.write(result)
