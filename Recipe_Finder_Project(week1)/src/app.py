@@ -7,7 +7,7 @@ API_KEY = "77dec99f1d134a65899d295ef2386615"
 # --------------------------
 
 st.set_page_config(page_title="Global Recipe Finder", layout="wide")
-st.title("🌎 Global Recipe Finder (Spoonacular API)")
+st.title("🌎 Global Recipe Finder")  # Removed "Spoonacular API" from title
 
 st.write("Type a recipe name and see ingredients, preparation steps, and recipe image.")
 
@@ -25,7 +25,7 @@ def find_recipe(dish_name):
         return None
 
     if "results" not in search_data or len(search_data["results"]) == 0:
-        return None
+        return None  # Will show "recipe not found"
 
     recipe_id = search_data["results"][0]["id"]
 
