@@ -81,4 +81,11 @@ if st.button("Search"):
                 if recipe.get("image"):
                     st.image(recipe["image"], width=400)
                 st.markdown("**Ingredients:**")
-                for ing in
+                for ing in recipe["ingredients"]:
+                    st.write(f"- {ing}")
+                st.markdown("**Preparation Steps:**")
+                for i, step in enumerate(recipe["steps"], 1):
+                    st.write(f"{i}. {step}")
+                st.markdown("---")
+        else:
+            st.error(f"No {recipe_type.lower()} recipes found for '{recipe_name}'.")
