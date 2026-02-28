@@ -1,8 +1,7 @@
 import requests
 
 # Replace this with your Spoonacular API key
-API_KEY = "PASTE_YOUR_KEY_HERE"
-
+API_KEY = 77dec99f1d134a65899d295ef2386615"
 def DevSearch_expedition(dish):
     """
     Searches for a recipe by name using Spoonacular API
