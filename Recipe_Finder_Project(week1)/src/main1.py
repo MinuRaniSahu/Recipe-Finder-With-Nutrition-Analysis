@@ -1,7 +1,7 @@
 import requests
 
 # 🔑 Put your valid Spoonacular API key here
-API_KEY = bcd787be9ab94bf987d2f7e4e925ae7b
+API_KEY = "bcd787be9ab94bf987d2f7e4e925ae7b"
 def DevSearch_expedition(dish: str):
     """
     Searches for a recipe by name using Spoonacular API
@@ -44,3 +44,4 @@ def DevSearch_expedition(dish: str):
             return {"ingredients": ingredients, "steps": steps}
 
     except requests.exceptions.RequestException as
+
