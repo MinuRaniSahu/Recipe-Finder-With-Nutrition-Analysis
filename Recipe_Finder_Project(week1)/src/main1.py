@@ -4,7 +4,7 @@ def DevSearch_expedition(dish):
         "query": dish,
         "number": 1,
         "addRecipeInformation": True,
-        "apiKey": "77dec99f1d134a65899d295ef2386615"
+        "apiKey": "bcd787be9ab94bf987d2f7e4e925ae7b"
     }
 
     try:
@@ -28,3 +28,4 @@ def DevSearch_expedition(dish):
         print("Error fetching recipe:", e)
 
     return None
+
