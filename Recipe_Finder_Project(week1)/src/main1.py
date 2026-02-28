@@ -1,33 +1,35 @@
-# Recipe Finder Application
-
-recipes = {
-    "pasta": { "ingredients": ["pasta", "salt", "water", "sauce"],
-        "instructions": "Boil pasta. Add sauce. Mix well and serve." },
-    "omelette": {"ingredients": ["egg", "salt", "oil"],
-        "instructions": "Beat eggs. Heat oil. Cook eggs and serve." },
-    "salad": { "ingredients": ["tomato", "cucumber", "salt", "lemon"],
-        "instructions": "Chop vegetables. Mix everything and serve." }
-}
-
-def find_recipe(dish_name):
-    dish_name = dish_name.lower()
-    
-    if dish_name in recipes:
-        print("\nRecipe Found!")
-        print("Ingredients:", ", ".join(recipes[dish_name]["ingredients"]))
-        print("Instructions:", recipes[dish_name]["instructions"])
-    else:
-        print("\nSorry, recipe not found.")
-
 def DevSearch_expedition(dish):
-    return f"Recipe found for {dish}"
+    recipes = {
         "egg curry": {
-            "ingredients": ["2 eggs", "1 onion", "2 tomatoes", "Spices"],
-            "instructions": "Boil eggs. Prepare gravy. Add eggs and cook."
+            "ingredients": [
+                "Eggs",
+                "Onion",
+                "Tomato",
+                "Chili powder",
+                "Salt",
+                "Oil"
+            ],
+            "steps": [
+                "Boil the eggs",
+                "Fry onion and tomato",
+                "Add spices",
+                "Add boiled eggs",
+                "Cook for 10 minutes"
+            ]
         },
-        "pasta": {
-            "ingredients": ["Pasta", "Tomato sauce", "Cheese"],
-            "instructions": "Boil pasta. Add sauce. Mix well."
+        "omelette": {
+            "ingredients": [
+                "Eggs",
+                "Salt",
+                "Pepper",
+                "Oil"
+            ],
+            "steps": [
+                "Beat the eggs",
+                "Add salt and pepper",
+                "Pour into pan",
+                "Cook both sides"
+            ]
         }
     }
 
@@ -36,7 +38,4 @@ def DevSearch_expedition(dish):
     if dish in recipes:
         return recipes[dish]
     else:
-        return "Recipe not found"
-
-
-
+        return None
