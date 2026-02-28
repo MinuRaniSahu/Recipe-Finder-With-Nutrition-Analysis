@@ -1,32 +1,33 @@
-import streamlit as st
-from main1 import DevSearch_expedition
+# main1.py
 
-st.set_page_config(page_title="Recipe Finder", page_icon="🍲")
-st.title("🍲 Recipe Finder App")
-st.write("Search for any recipe and see ingredients and preparation steps.")
+import requests
 
-# Input box
-dish = st.text_input("Enter recipe name")
+API_KEY = "77dec99f1d134a65899d295ef2386615"
 
-# Button to trigger search
-if st.button("Search"):
-    if not dish.strip():
-        st.warning("Please type a recipe name!")
-    else:
-        recipe = DevSearch_expedition(dish)
-        if recipe:
-            st.success("Recipe Found Successfully! 🎉")
+def DevSearch_expedition(dish):
+    url = "https://api.spoonacular.com/recipes/complexSearch"
+    params = {
+        "query": dish,
+        "number": 1,
+        "addRecipeInformation": True,
+        "apiKey": API_KEY
+    }
 
-            st.subheader("Ingredients:")
-            for ingredient in recipe["ingredients"]:
-                st.write("-", ingredient)
+    try:
+        response = requests.get(url, params=params)
+        data = response.json()
 
-            st.subheader("Preparation Steps:")
-            for i, step in enumerate(recipe["steps"], 1):
-                st.write(f"{i}. {step}")
-        else:
-            st.error("Recipe not found. Try another dish.")
+        if data.get("results"):
+            recipe = data["results"][0]
+            ingredients = [i["original"] for i in recipe.get("extendedIngredients", [])]
 
-# Footer
-st.markdown("---")
-st.write("Developed as part of Internship Project")
+            steps = []
+            instructions = recipe.get("analyzedInstructions", [])
+            if instructions:
+                steps = [step["step"] for step in instructions[0].get("steps", [])]
+
+            return {"ingredients": ingredients, "steps": steps}
+    except Exception as e:
+        print("Error:", e)
+
+    return None
