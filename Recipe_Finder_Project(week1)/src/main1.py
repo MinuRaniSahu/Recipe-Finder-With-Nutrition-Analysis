@@ -21,8 +21,6 @@ def find_recipe(dish_name):
 
 def DevSearch_expedition(dish):
     return f"Recipe found for {dish}"
-def DevSearch_expedition(dish):
-    recipes = {
         "egg curry": {
             "ingredients": ["2 eggs", "1 onion", "2 tomatoes", "Spices"],
             "instructions": "Boil eggs. Prepare gravy. Add eggs and cook."
@@ -39,5 +37,6 @@ def DevSearch_expedition(dish):
         return recipes[dish]
     else:
         return "Recipe not found"
+
 
 
