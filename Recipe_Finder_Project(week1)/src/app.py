@@ -1,36 +1,34 @@
-import json
+import streamlit as st
+from main1 import DevSearch_expedition
 
-# --- Load recipes from JSON ---
-with open("recipes.json", "r") as f:
-    recipes = json.load(f)
+# Page Configuration
+st.set_page_config(page_title="Recipe Finder", page_icon="🍲")
 
+# Title
+st.title("🍲 Recipe Finder App")
+st.write("Find your favorite recipes instantly!")
 
-# --- Search function ---
-def search_recipe(dish):
-    dish_lower = dish.strip().lower()
-    for name, data in recipes.items():
-        if name.lower() == dish_lower:
-            return data
-    # If recipe not found, return None
-    return None
+# Input Box
+dish = st.text_input("Enter recipe name")
 
-
-# --- App start ---
-while True:
-    dish = input("Enter recipe name: ").strip()
-    recipe = search_recipe(dish)
+# Search Logic
+if dish:
+    recipe = DevSearch_expedition(dish)
 
     if recipe:
-        print("\nIngredients:")
-        for ing in recipe["ingredients"]:
-            print("-", ing)
-        print("\nSteps:")
-        for i, step in enumerate(recipe["steps"], start=1):
-            print(f"{i}. {step}")
-    else:
-        # This is where your existing error message goes
-        print("Error: Recipe not found, please try another dish")
+        st.success("Recipe Found Successfully! 🎉")
 
-    cont = input("\nSearch another recipe? (y/n): ").strip().lower()
-    if cont != "y":
-        break
+        st.subheader("🧂 Ingredients:")
+        for ingredient in recipe["ingredients"]:
+            st.write("•", ingredient)
+
+        st.subheader("👩‍🍳 Preparation Steps:")
+        for step in recipe["steps"]:
+            st.write("•", step)
+
+    else:
+        st.error("Recipe not found. Please try another dish.")
+
+# Footer
+st.markdown("---")
+st.write("Developed as part of Internship Project")
