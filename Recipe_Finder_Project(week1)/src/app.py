@@ -7,14 +7,19 @@ API_KEY = "77dec99f1d134a65899d295ef2386615"
 # --------------------------
 
 st.set_page_config(page_title="Global Recipe Finder", layout="wide")
-st.title("🌎 Global Recipe Finder")  # Removed "Spoonacular API" from title
+st.title("🌎 Global Recipe Finder")  # Clean title, no "Spoonacular API"
 
-st.write("Type a recipe name and see ingredients, preparation steps, and recipe image.")
+st.write("Type a recipe name to see ingredients, preparation steps, and recipe image.")
 
-# Function to fetch recipe
+# Function to fetch recipe from Spoonacular
 def find_recipe(dish_name):
+    # Step 1: Search recipe
     search_url = "https://api.spoonacular.com/recipes/complexSearch"
-    search_params = {"query": dish_name, "number": 1, "apiKey": API_KEY}
+    search_params = {
+        "query": dish_name,
+        "number": 1,
+        "apiKey": API_KEY
+    }
 
     try:
         search_response = requests.get(search_url, params=search_params, timeout=10)
@@ -25,12 +30,16 @@ def find_recipe(dish_name):
         return None
 
     if "results" not in search_data or len(search_data["results"]) == 0:
-        return None  # Will show "recipe not found"
+        return None  # No recipe found
 
     recipe_id = search_data["results"][0]["id"]
 
+    # Step 2: Get full recipe information
     info_url = f"https://api.spoonacular.com/recipes/{recipe_id}/information"
-    info_params = {"includeNutrition": False, "apiKey": API_KEY}
+    info_params = {
+        "includeNutrition": False,
+        "apiKey": API_KEY
+    }
 
     try:
         info_response = requests.get(info_url, params=info_params, timeout=10)
@@ -40,12 +49,16 @@ def find_recipe(dish_name):
         st.error(f"Network/API error: {e}")
         return None
 
+    # Extract ingredients
     ingredients = [ing["original"] for ing in recipe_data.get("extendedIngredients", [])]
+
+    # Extract preparation steps
     steps = []
     instructions = recipe_data.get("analyzedInstructions", [])
     if instructions:
         steps = [step["step"] for step in instructions[0].get("steps", [])]
 
+    # Return everything
     return {
         "id": recipe_id,
         "title": recipe_data.get("title"),
@@ -64,6 +77,7 @@ if st.button("Search"):
         recipe = find_recipe(dish)
         if recipe:
             st.subheader(f"{recipe['title']} (ID: {recipe['id']})")
+            
             if recipe["image"]:
                 st.image(recipe["image"], width=400)
 
