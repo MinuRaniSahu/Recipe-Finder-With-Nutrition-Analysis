@@ -1,6 +1,6 @@
 import requests
 
-API_KEY = "PASTE_YOUR_KEY_HERE"
+API_KEY = "77dec99f1d134a65899d295ef2386615"
 
 def DevSearch_expedition(dish):
 
@@ -47,3 +47,4 @@ def DevSearch_expedition(dish):
     except Exception as e:
         print("Error:", e)
         return None
+
