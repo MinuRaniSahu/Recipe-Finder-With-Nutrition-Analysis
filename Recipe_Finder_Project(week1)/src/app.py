@@ -68,4 +68,33 @@ def search_global(keyword):
 keyword = st.text_input("Enter recipe keyword:")
 
 if st.button("Search"):
-    if
+    if not keyword.strip():
+        st.warning("Please enter a recipe keyword.")
+    else:
+        indian_matches = search_indian(keyword)
+        global_matches = search_global(keyword)
+        all_recipes = indian_matches + global_matches
+
+        if all_recipes:
+            for recipe in all_recipes:
+                title_md = f"### **_{recipe['title']}_** (ID: {recipe.get('id', 'Local')})"
+                if recipe.get("is_indian"):
+                    title_md = f"<span style='color:red'>{title_md}</span>"
+                    st.markdown(title_md, unsafe_allow_html=True)
+                else:
+                    st.markdown(title_md)
+
+                if recipe.get("image"):
+                    st.image(recipe["image"], width=400)
+
+                st.markdown("**Ingredients:**")
+                for ing in recipe["ingredients"]:
+                    st.write(f"- {ing}")
+
+                st.markdown("**Preparation Steps:**")
+                for i, step in enumerate(recipe["steps"], 1):
+                    st.write(f"{i}. {step}")
+
+                st.markdown("---")
+        else:
+            st.error("No recipes found. Try another keyword.")
