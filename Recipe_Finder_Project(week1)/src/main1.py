@@ -4,12 +4,13 @@ API_KEY = "77dec99f1d134a65899d295ef2386615"
 
 def DevSearch_expedition(dish):
 
-  url = f"https://api.spoonacular.com/recipes/complexSearch?query={dish}&number=5&apiKey={77dec99f1d134a65899d295ef2386615}"
+  url = 
+  f"https://api.spoonacular.com/recipes/complexSearch?query={dish}&number=5&apiKey={77dec99f1d134a65899d295ef2386615}"
     params = {
         "query": dish,
         "number": 1,
         "addRecipeInformation": True,
-        "apiKey": "77dec99f1d134a65899d295ef2386615"
+        "apiKey": 77dec99f1d134a65899d295ef2386615
 
     try:
         response = requests.get(url, params=params)
@@ -45,5 +46,6 @@ def DevSearch_expedition(dish):
     except Exception as e:
         print("Error:", e)
         return None
+
 
 
