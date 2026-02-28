@@ -1,7 +1,6 @@
 import requests
 
-API_KEY = "77dec99f1d134a65899d295ef2386615"
-
+API_KEY = "PASTE_YOUR_KEY_HERE"
 
 def DevSearch_expedition(dish):
 
@@ -14,25 +13,37 @@ def DevSearch_expedition(dish):
         "apiKey": API_KEY
     }
 
-    response = requests.get(url, params=params)
-    data = response.json()
+    try:
+        response = requests.get(url, params=params)
+        data = response.json()
 
-    if data["results"]:
-        recipe = data["results"][0]
+        # 🔐 Safe check for results
+        if "results" in data and len(data["results"]) > 0:
 
-        ingredients = [
-            ingredient["original"]
-            for ingredient in recipe["extendedIngredients"]
-        ]
+            recipe = data["results"][0]
 
-        steps = []
-        if recipe.get("analyzedInstructions"):
-            instructions = recipe["analyzedInstructions"][0]["steps"]
-            steps = [step["step"] for step in instructions]
+            ingredients = [
+                ingredient["original"]
+                for ingredient in recipe.get("extendedIngredients", [])
+            ]
 
-        return {
-            "ingredients": ingredients,
-            "steps": steps
-        }
+            steps = []
+            instructions = recipe.get("analyzedInstructions", [])
 
-    return None
+            if instructions:
+                steps = [
+                    step["step"]
+                    for step in instructions[0].get("steps", [])
+                ]
+
+            return {
+                "ingredients": ingredients,
+                "steps": steps
+            }
+
+        else:
+            return None
+
+    except Exception as e:
+        print("Error:", e)
+        return None
